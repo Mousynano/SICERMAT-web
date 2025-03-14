@@ -74,6 +74,10 @@ spo2Gauge.maxValue = 100;
 spo2Gauge.setMinValue(0);
 spo2Gauge.set(0);
 
+
+// FETCH DATA
+
+
 function fetchHrSpoData() {
    if (fetchHrSpo) {
 
@@ -88,5 +92,7 @@ function fetchHrSpoData() {
 
    }
 }
+
+
 setInterval(fetchHrSpoData, 1000);
 ///////////////////////////////
