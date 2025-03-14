@@ -76,23 +76,21 @@ spo2Gauge.set(0);
 
 
 // FETCH DATA
+const updateHrSpoData = (heartRate, spo) => {
+   heartRateGauge.set(heartRate);
+   spo2Gauge.set(spo);
 
-
-function fetchHrSpoData() {
-   if (fetchHrSpo) {
-
-      heartValue = Math.floor(Math.random() * 71) + 60;
-      spoValue = Math.floor(Math.random() * 21) + 80;
-
-      heartRateGauge.set(heartValue);
-      spo2Gauge.set(spoValue);
-
-      $('#heartRateText').text(`${heartValue} BPM`);
-      $('#spo2Text').text(`${spoValue}%`);
-
-   }
+   $('#heartRateText').text(`${heartRate} BPM`);
+   $('#spo2Text').text(`${spo}%`);
 }
 
+client.on("message", (data) => {
+   if (data.heartRate !== undefined && data.spo !== undefined) {
+      updateHrSpoData(data.heartRate, data.spo);
+   }else{
+      console.warn("Received unexpected data:", data);
+   }
 
-setInterval(fetchHrSpoData, 1000);
+   client.send('ACK')
+});
 ///////////////////////////////

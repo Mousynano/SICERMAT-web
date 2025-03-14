@@ -3,7 +3,7 @@ class WebSocketClient {
         this.url = url;
         this.ws = null;
         this.listeners = {};
-        this.reconnectInterval = 2000; // Waktu tunggu sebelum reconnect
+        this.reconnectInterval = 2000;
         this.i = 0
     }
 
@@ -33,7 +33,7 @@ class WebSocketClient {
 
         this.ws.onerror = (error) => {
             console.error("WebSocket Error:", error);
-            this.ws.close(); // Tutup koneksi agar bisa reconnect
+            this.ws.close();
         };
     }
 
@@ -53,6 +53,6 @@ class WebSocketClient {
         }
     }
 }
- 
- export default WebSocketClient;
- 
+
+const client = new WebSocketClient("ws://esp32-server.local/ws");
+client.connect();

@@ -5,13 +5,6 @@ var timeElapsedJump = 0
 var allJumpData = [];
 var fetchJump = false
 
-
-
-
-
-
-
-
 //2) GAUGES//
 var jumpGauge = JSC.chart('jumpHeightGauge', {
    debug: true,
@@ -122,38 +115,43 @@ document.getElementById("export-jump").addEventListener("click", function () {
 });
 
 //4) FETCH DATA//
-var fetchDataJump = () => {
-   if (fetchJump) {
-
-      jumpCount++
-      jumpHeight = Math.floor(Math.random() * 10) + 1;
-
-      allJumpData.push({ time: `Time ${timeElapsedJump + 1}`, height: jumpHeight });
-
-      $('#jumpCount').text(`${jumpCount}`);
-      $('#jumpHeight').text(`${jumpHeight}m`);
-      $('#jumpCm').text(`${jumpHeight * 10} cm`);
-      maxHeight = Math.max(maxHeight, jumpHeight);
-      $('#maxHeight').text(`${maxHeight} m`);
-
-      jumpGauge.options({
-         series: [{
-            points: [['score', [1, jumpHeight]]],
-         }]
-      })
-
-      timeElapsedJump++;
-      if (timeElapsedJump > 10) {
-         jumpChart.data.labels.shift();
-         jumpChart.data.datasets.forEach(dataset => {
-            dataset.data.shift();
-         });
-      }
-
-      jumpChart.data.labels.push(`Time ${timeElapsedJump}`);
-      jumpChart.data.datasets[0].data.push(jumpHeight);
-      jumpChart.update();
+client.on("message", (data) => {
+   if (data.jumpHeight !== undefined) {
+         fetchDataJump(jumpHeight);
+   }else{
+      console.warn("Received unexpected data:", data);
    }
+   client.send('ACK')
+});
+
+var fetchDataJump = (jumpHeight) => {
+   jumpCount++
+
+   allJumpData.push({ time: `Time ${timeElapsedJump + 1}`, height: jumpHeight });
+
+   $('#jumpCount').text(`${jumpCount}`);
+   $('#jumpHeight').text(`${jumpHeight}m`);
+   $('#jumpCm').text(`${jumpHeight * 10} cm`);
+   maxHeight = Math.max(maxHeight, jumpHeight);
+   $('#maxHeight').text(`${maxHeight} m`);
+
+   jumpGauge.options({
+      series: [{
+         points: [['score', [1, jumpHeight]]],
+      }]
+   })
+
+   timeElapsedJump++;
+   if (timeElapsedJump > 10) {
+      jumpChart.data.labels.shift();
+      jumpChart.data.datasets.forEach(dataset => {
+         dataset.data.shift();
+      });
+   }
+
+   jumpChart.data.labels.push(`Time ${timeElapsedJump}`);
+   jumpChart.data.datasets[0].data.push(jumpHeight);
+   jumpChart.update();
 }
 
 //5) START AND RESET BUTTONS//
