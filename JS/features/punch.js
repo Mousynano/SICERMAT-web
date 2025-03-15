@@ -127,17 +127,8 @@ document.getElementById("export-punch").addEventListener("click", function () {
 });
 
 //4) FETCH DATA//
-client.on("message", (data) => {
-   if (data.punchPower !== undefined && data.retractionTime !== undefined) {
-      updateHrSpoData(data.heartRate, data.spo);
-   }else{
-      console.warn("Received unexpected data:", data);
-   }
-
-   client.send('ACK')
-});
-
-const fetchDataPunch = (punchPower, retractionTime) => {
+export const updateData = (data) => {
+   const {punchPower, retractionTime} = data;
    punchCount++
 
    allPunchData.push({
@@ -206,4 +197,6 @@ function resetExercise() {
    strPunch.textContent = "Start"
 }
 
-setInterval(fetchDataPunch, 1000);
+resetExercise()
+
+// setInterval(() => {updateData({punchPower: Math.floor(Math.random() * 100), retractionTime: Math.floor(Math.random() * 100)})}, 1000)

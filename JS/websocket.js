@@ -2,9 +2,9 @@ class WebSocketClient {
     constructor(url) {
         this.url = url;
         this.ws = null;
-        this.listeners = {};
+        this.listeners = {}; // Menyimpan event listener aktif
         this.reconnectInterval = 2000;
-        this.i = 0
+        this.i = 0;
     }
 
     connect() {
@@ -19,8 +19,17 @@ class WebSocketClient {
             try {
                 const data = JSON.parse(event.data);
                 console.log(`${JSON.stringify(data)}: ${this.i++}`);
-                this.emit("message", data);
+                console.log("Checking message type:", data.type);
+                console.log("Available listeners: ", JSON.stringify(this.listeners));
+
+                if (data.type && this.listeners[data.type]) {
+                    this.emit(data.type, data);
+                } else {
+                    console.warn("Received message with unknown type:", data.type);
+                }
+
             } catch (error) {
+                console.log(`${JSON.stringify(event.data)}: ${this.i++}`);
                 console.error("Error parsing WebSocket message:", error);
             }
         };
@@ -38,12 +47,19 @@ class WebSocketClient {
     }
 
     on(event, callback) {
-        this.listeners[event] = callback;
+        if (!this.listeners[event]) {
+            this.listeners[event] = [];
+        }
+        this.listeners[event].push(callback);
+    }
+
+    off(event) {
+        delete this.listeners[event];
     }
 
     emit(event, data) {
         if (this.listeners[event]) {
-            this.listeners[event](data);
+            this.listeners[event].forEach(callback => callback(data));
         }
     }
 
@@ -54,5 +70,7 @@ class WebSocketClient {
     }
 }
 
-const client = new WebSocketClient("ws://esp32-server.local/ws");
+
+// Singleton WebSocket Client
+export const client = new WebSocketClient("ws://esp32-server.local/ws");
 client.connect();

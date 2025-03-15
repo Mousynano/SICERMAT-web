@@ -45,7 +45,7 @@ spo2Gauge.set(0);
 
 
 // UPDATE DATA
-const updateHrSpoData = (data) => {
+export const updateData = (data) => {
    const {heartRate, spo} = data;
    heartRateGauge.set(heartRate);
    spo2Gauge.set(spo);

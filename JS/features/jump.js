@@ -1,12 +1,12 @@
-//1) VARIABLES//
-var jumpCount = 0
-var maxHeight = 0;
-var timeElapsedJump = 0
-var allJumpData = [];
-var fetchJump = false
+//1) letIABLES//
+let jumpCount = 0
+let maxHeight = 0;
+let timeElapsedJump = 0
+let allJumpData = [];
+let fetchJump = false
 
 //2) GAUGES//
-var jumpGauge = JSC.chart('jumpHeightGauge', {
+let jumpGauge = JSC.chart('jumpHeightGauge', {
    debug: true,
    box: {
       fill: 'transparent'
@@ -115,16 +115,8 @@ document.getElementById("export-jump").addEventListener("click", function () {
 });
 
 //4) FETCH DATA//
-client.on("message", (data) => {
-   if (data.jumpHeight !== undefined) {
-         fetchDataJump(jumpHeight);
-   }else{
-      console.warn("Received unexpected data:", data);
-   }
-   client.send('ACK')
-});
-
-var fetchDataJump = (jumpHeight) => {
+export const updateData = (data) => {
+   const { jumpHeight } = data
    jumpCount++
 
    allJumpData.push({ time: `Time ${timeElapsedJump + 1}`, height: jumpHeight });
@@ -155,8 +147,8 @@ var fetchDataJump = (jumpHeight) => {
 }
 
 //5) START AND RESET BUTTONS//
-var strJump = document.getElementById('str-jump')
-var rstJump = document.getElementById('rst-jump')
+let strJump = document.getElementById('str-jump')
+let rstJump = document.getElementById('rst-jump')
 strJump.addEventListener('click', () => startExercise())
 rstJump.addEventListener('click', () => resetExercise())
 
@@ -187,5 +179,3 @@ function resetExercise() {
    jumpChart.update();
    strJump.textContent = "Start"
 }
-
-setInterval(fetchDataJump, 1000);

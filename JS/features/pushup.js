@@ -122,7 +122,7 @@ function resetTime() {
 }
 
 //5) FETCHING DATA //
-var fetchDataPushup = () => {
+export const updateData = () => {
    if (fetchPushup) {
       let pushUpOneSec = Math.floor(Math.random() * 3) + 1;
       pushUpCount += pushUpOneSec
@@ -205,5 +205,3 @@ function resetExercise() {
    resetTime()
 
 }
-
-setInterval(fetchDataPushup, 1000);
