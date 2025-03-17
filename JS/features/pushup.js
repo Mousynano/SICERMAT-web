@@ -103,23 +103,6 @@ function updateTimer() {
    timerElement.textContent = formatTime(time);
 }
 
-function startPauseTime() {
-   if (isRunning) {
-      clearInterval(timerInterval);
-   } else {
-      timerInterval = setInterval(() => {
-         time++;
-         updateTimer();
-      }, 1000);
-   }
-   isRunning = !isRunning;
-}
-function resetTime() {
-   clearInterval(timerInterval);
-   time = 0;
-   isRunning = false;
-   updateTimer();
-}
 
 //5) FETCHING DATA //
 export const updateData = () => {
